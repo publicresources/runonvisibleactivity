@@ -1,5 +1,6 @@
 function runOnVisibleActivity(callback) {
     let isActivityVisible = function (activity) {
+        console.log(activity.getWindow().getDecorView().getWindowVisibility())
         return !activity.isFinishing() && !activity.isDestroyed() && activity.getWindow() != null && activity.getWindow().getDecorView().getWindowVisibility() == 0;
     }
     Java.perform(function () {
@@ -24,11 +25,17 @@ function runOnVisibleActivity(callback) {
     });
 }
 
--- usage
 
-setTimeout(()=>{
-    runOnVisibleActivity((context)=>{
-        console.log(context)
+
+function  wait_activity() {
+    runOnVisibleActivity(async function (context) {
+        if (context == null) {
+            setTimeout(wait_activity,1000)
+        }else{
+            console.log("Current activity: ",context)
+        }
     })
-},1000) --run after 1s to make sure the activity has loaded.
+}
+
+wait_activity()
 
